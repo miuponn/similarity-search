@@ -18,26 +18,29 @@ public class ColorHistogram {
                 throw new IOException("Histogram file is empty.");
             }
             this.binCount = Integer.parseInt(line.trim());
+            System.out.println("Reading histogram from " + filename + " with bin count: " + binCount); // Debugging
+    
             this.histogram = new double[binCount];
-
             line = reader.readLine();
             if (line == null) {
                 throw new IOException("Histogram values are missing.");
             }
-                
+                    
             String[] values = line.trim().split("\\s+");
-            
             if(values.length != binCount){
-                throw new IOException("Histogram data does not match bin count.");
+                throw new IOException("Histogram data does not match bin count: expected " + binCount + ", got " + values.length);
             }
-
+    
             for(int i = 0; i < binCount; i++){
                 histogram[i] = Double.parseDouble(values[i]);
+                // Print each histogram value as it's read
+                System.out.println("Histogram[" + i + "]: " + histogram[i]);
             }
         } catch(NumberFormatException e) {
             throw new IOException("Invalid format in histogram file.", e);
         }
     }
+    
 
     public void setImage(ColorImage image){
         int numBins = (int) Math.pow(2, depth * 3);
@@ -67,12 +70,14 @@ public class ColorHistogram {
     }
 
     public double compare(ColorHistogram hist){
-        double intersection = 0;
 
-        for(int i = 0; i < this.binCount; i++){
-            intersection += Math.min(this.histogram[i], hist.histogram[i]);
+        double[] hist1 = this.getHistogram();
+        double[] hist2 = hist.getHistogram();
+
+        double intersection = 0.0;
+        for (int i = 0; i < hist1.length; i++) {
+            intersection += Math.min(hist1[i], hist2[i]);
         }
-
         return intersection;
     }
 
