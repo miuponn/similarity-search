@@ -2,12 +2,12 @@ import java.io.*;
 
 public class ColorImage{
 
-    private int depth = 8; //assume depth is 8
+    private int depth;
     private int width, height;
     private int [][][] pixels; //3d array of pixels(RGB)
 
-    public ColorImage(String filename) throws IOException{
-        System.out.println("Processing file: " + filename);
+    public ColorImage(String filename, int depth){
+        this.depth = depth;
         try (BufferedReader readPPM = new BufferedReader(new FileReader(filename))){
             
             readPPM.readLine(); //skip P3
@@ -48,6 +48,8 @@ public class ColorImage{
 
                     }
                 }
+            }catch (IOException e){
+                e.printStackTrace();
             }
         }
 
@@ -79,9 +81,9 @@ public class ColorImage{
             }
         }
     }
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         try {
-            String filename = "/Users/kelly/Desktop/CSI2120/Project/similarity-search/q00.ppm";
+            String filename = "C:\\Users\\KELLY\\OneDrive\\Documents\\GitHub\\similarity-search\\q00.ppm";
             ColorImage image = new ColorImage(filename);
             // Additional code to work with the image
 
@@ -102,6 +104,6 @@ public class ColorImage{
         } catch (IOException e) {
             System.err.println("An error occurred while loading the image: " + e.getMessage());
         }
-    }
+    }*/
 }
 

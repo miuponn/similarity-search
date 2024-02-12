@@ -2,49 +2,47 @@ import java.io.*;
 public class ColorHistogram {
     
     private double[] histogram;
-    private int binCount;
     private int depth;
 
     public ColorHistogram(int d){
         this.depth = d;
-        this.binCount = (int) Math.pow(2, depth * 3);
+        int binCount = (int) Math.pow(2, depth * 3);
         this.histogram = new double[binCount]; 
     }
 
-    public ColorHistogram(String filename) throws IOException{
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
+    public ColorHistogram(String filename){
+        int binCount = 0;
+
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line = reader.readLine();
-            if(line == null){
-                throw new IOException("Histogram file is empty.");
-            }
-            this.binCount = Integer.parseInt(line.trim());
-            System.out.println("Reading histogram from " + filename + " with bin count: " + binCount); // Debugging
-    
+            binCount = Integer.parseInt(line.trim());
             this.histogram = new double[binCount];
-            line = reader.readLine();
-            if (line == null) {
-                throw new IOException("Histogram values are missing.");
+            this.depth = (int)(Math.log(binCount) / Math.log(2) / 3);
+
+            int index = 0;
+            while ((line = reader.readLine()) != null) {
+                String[] numbers = line.split("\\s+");
+                for (String number : numbers) {
+                    if (!number.trim().isEmpty()) {
+                        try {
+                            histogram[index++] = Double.parseDouble(number.trim());
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error parsing number from string: \"" + number + "\"");
+                            throw e; // Rethrow the exception to halt execution, or handle as needed
+                        }
+                    }
+                }
             }
-                    
-            String[] values = line.trim().split("\\s+");
-            if(values.length != binCount){
-                throw new IOException("Histogram data does not match bin count: expected " + binCount + ", got " + values.length);
-            }
-    
-            for(int i = 0; i < binCount; i++){
-                histogram[i] = Double.parseDouble(values[i]);
-                // Print each histogram value as it's read
-                System.out.println("Histogram[" + i + "]: " + histogram[i]);
-            }
-        } catch(NumberFormatException e) {
-            throw new IOException("Invalid format in histogram file.", e);
+
+        }catch (IOException d){
+            d.printStackTrace();
         }
     }
     
-
     public void setImage(ColorImage image){
-        int numBins = (int) Math.pow(2, depth * 3);
-        this.histogram = new double[numBins];
+        int binCount = (int) Math.pow(2, depth * 3);
+        this.histogram = new double[binCount];
 
         int width = image.getWidth();
         int height = image.getHeight();
@@ -59,7 +57,7 @@ public class ColorHistogram {
                 histogram[binIndex]++;
             }
         }
-        for(int i = 0; i < numBins; i++){ //normalization
+        for(int i = 0; i < binCount; i++){ //normalization
             histogram[i] /= pixels;
         }
 
@@ -70,23 +68,31 @@ public class ColorHistogram {
     }
 
     public double compare(ColorHistogram hist){
-
         double[] hist1 = this.getHistogram();
         double[] hist2 = hist.getHistogram();
-
+    
         double intersection = 0.0;
         for (int i = 0; i < hist1.length; i++) {
-            intersection += Math.min(hist1[i], hist2[i]);
+            double binIntersection = Math.min(hist1[i], hist2[i]);
+            intersection += binIntersection;
+            // Print the intersection for each bin for debugging
+            //System.out.println("Bin " + i + ": " + binIntersection);
         }
+        // Print the total intersection for debugging
+        //System.out.println("Total Intersection: " + intersection);
         return intersection;
     }
 
     public void save(String filename) throws IOException{
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))){
-            writer.write(binCount + "\n");
-            for(double bin: histogram){
-                writer.write(bin +"\n");
+            writer.write(String.valueOf(depth));
+            writer.newLine();
+            for(double binValue : histogram){
+                writer.write(String.valueOf(binValue));
+                writer.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
-}
