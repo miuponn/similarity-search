@@ -4,38 +4,41 @@ import java.util.*;
 public class SimilaritySearch {
 
     public static void main(String[] args) {
-        int depth = 3;
-        String queryImageFile = "C:\\Users\\KELLY\\OneDrive\\Documents\\GitHub\\similarity-search\\q02.ppm";
-        String dataDirectory = "C:\\Users\\KELLY\\OneDrive\\Documents\\GitHub\\similarity-search\\imageDataset2_15_20";
         
+        if(args.length < 2){
+            System.out.println("Usage: java SimilaritySearch <queryImage> <dataDirectory>");
+            return;
+        }
+        String queryImageFile = args[0];
+        String dataDirectory = args[0];
 
-            ColorImage queryImage = new ColorImage(queryImageFile, depth);
-            queryImage.reduceColor(depth);
+        ColorImage queryImage = new ColorImage(queryImageFile, 3);
+        queryImage.reduceColor(3);
             
-            ColorHistogram queryHistogram = new ColorHistogram(depth);
-            queryHistogram.setImage(queryImage);
+        ColorHistogram queryHistogram = new ColorHistogram(3);
+        queryHistogram.setImage(queryImage);
 
-            Map<Double, String> similarImagesMap = new HashMap<>();
+        Map<Double, String> similarImagesMap = new HashMap<>();
 
-            File directorySet = new File(dataDirectory);
-            File[] directoryListing = directorySet.listFiles();
+        File directorySet = new File(dataDirectory);
+        File[] directoryListing = directorySet.listFiles();
 
-            if(directoryListing != null){
-                for(File child : directoryListing){
-                    if(child.isFile() && child.getName().toLowerCase().endsWith(".txt")){
-                        ColorHistogram datasetHistogram = new ColorHistogram(child.getAbsolutePath());
+        if(directoryListing != null){
+            for(File child : directoryListing){
+                if(child.isFile() && child.getName().toLowerCase().endsWith(".txt")){
+                    ColorHistogram datasetHistogram = new ColorHistogram(child.getAbsolutePath());
 
-                        double score = queryHistogram.compare(datasetHistogram);
+                    double score = queryHistogram.compare(datasetHistogram);
 
-                        similarImagesMap.put(score, child.getName().replace(".txt", ""));
+                    similarImagesMap.put(score, child.getName().replace(".txt", ""));
                     }
                 }
             }
 
-            similarImagesMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(5) 
-                .forEach(entry -> System.out.println(entry.getValue() + ": " + entry.getKey()));
-        }
+        similarImagesMap.entrySet().stream()
+            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+            .limit(5) 
+            .forEach(entry -> System.out.println(entry.getValue() + ": " + entry.getKey()));
     }
+}
 

@@ -81,29 +81,5 @@ public class ColorImage{
             }
         }
     }
-    /*public static void main(String[] args) {
-        try {
-            String filename = "C:\\Users\\KELLY\\OneDrive\\Documents\\GitHub\\similarity-search\\q00.ppm";
-            ColorImage image = new ColorImage(filename);
-            // Additional code to work with the image
-
-            // Print image information
-            System.out.println("Width: " + image.getWidth());
-            System.out.println("Height: " + image.getHeight());
-            System.out.println("Depth: " + image.getDepth());
-
-            // Print the pixel values of a specific pixel (e.g., pixel at column 0, row 0)
-            int[] pixel = image.getPixel(0, 0);
-            System.out.println("Pixel at (0, 0): [" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + "]");
-
-            // Reduce the color space
-            int reducedDepth = 2; // Example reduced depth value
-            image.reduceColor(reducedDepth);
-            System.out.println("Reduced Depth: " + image.getDepth());
-            
-        } catch (IOException e) {
-            System.err.println("An error occurred while loading the image: " + e.getMessage());
-        }
-    }*/
 }
 

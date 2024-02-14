@@ -13,8 +13,7 @@ public class ColorHistogram {
     public ColorHistogram(String filename){
         int binCount = 0;
 
-        try{
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
+        try(BufferedReader reader = new BufferedReader(new FileReader(filename))){
             String line = reader.readLine();
             binCount = Integer.parseInt(line.trim());
             this.histogram = new double[binCount];
