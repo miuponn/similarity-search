@@ -1,4 +1,9 @@
-import java.io.*;
+/**
+ * Student ID: 300245890, 300283847
+ * Group Members: Kelly Gao, Sanika Sisodia
+ */
+
+ import java.io.*;
 
 public class ColorImage{
 
@@ -7,17 +12,17 @@ public class ColorImage{
     private int [][][] pixels; //3d array of pixels(RGB)
 
     public ColorImage(String filename, int depth){
-        this.depth = depth;
-        try (BufferedReader readPPM = new BufferedReader(new FileReader(filename))){
+        this.depth = depth; //depth
+        try (BufferedReader readPPM = new BufferedReader(new FileReader(filename))){ //open file
             
-            readPPM.readLine(); //skip P3
-            String line;
+            readPPM.readLine(); //skip 'P3' 
+            String line; //variable to hold line
             
-            boolean foundDimensions = false;
-            while((line = readPPM.readLine()) != null){
+            boolean foundDimensions = false; //check for dimensions boolean
+            while((line = readPPM.readLine()) != null){ 
                 line = line.trim();
                 if(!line.startsWith("#") && !line.isEmpty()){ //skip comments
-                    if(!foundDimensions){
+                    if(!foundDimensions){ //read lines until dimensions are found
                         String[] dimensions = line.split("\\s+");
                         width = Integer.parseInt(dimensions[0]);
                         height = Integer.parseInt(dimensions[1]);
@@ -27,15 +32,15 @@ public class ColorImage{
                 }
             }
             
-            if(!foundDimensions){
+            if(!foundDimensions){ //throw exception if not found
                 throw new IOException("Dimensions not found in PPM file.");
             }
 
             pixels = new int[height][width][3]; //initialize pixels array
             
-            int pixelCount = 0;
+            int pixelCount = 0; //pixel counter
 
-            while((line = readPPM.readLine()) != null && pixelCount < width * height){
+            while((line = readPPM.readLine()) != null && pixelCount < width * height){ //read rgb values from lines
                 String[] rgb = line.trim().split("\\s+");
                 for(int k = 0; k < rgb.length; k += 3){
                     int i = pixelCount / width;
@@ -48,8 +53,12 @@ public class ColorImage{
 
                     }
                 }
-            }catch (IOException e){
-                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                System.err.println("Error: File not found - " + filename);
+            } catch (IOException e) {
+                System.err.println("Error: IO exception while reading file - " + filename);
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Number format exception while parsing image data");
             }
         }
 
@@ -70,7 +79,7 @@ public class ColorImage{
     }
 
     public void reduceColor(int d){
-        int rightShift = depth - d;
+        int rightShift = depth - d; //right shift 
         this.depth = d;
 
         for(int i = 0; i < height; i++){
