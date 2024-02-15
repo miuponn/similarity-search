@@ -10,7 +10,7 @@ public class SimilaritySearch {
             return;
         }
         String queryImageFile = args[0];
-        String dataDirectory = args[0];
+        String dataDirectory = args[1];
 
         ColorImage queryImage = new ColorImage(queryImageFile, 3);
         queryImage.reduceColor(3);

@@ -28,7 +28,7 @@ public class ColorHistogram {
                             histogram[index++] = Double.parseDouble(number.trim());
                         } catch (NumberFormatException e) {
                             System.err.println("Error parsing number from string: \"" + number + "\"");
-                            throw e; // Rethrow the exception to halt execution, or handle as needed
+                            throw e; // Rethrow the exception 
                         }
                     }
                 }
@@ -74,11 +74,7 @@ public class ColorHistogram {
         for (int i = 0; i < hist1.length; i++) {
             double binIntersection = Math.min(hist1[i], hist2[i]);
             intersection += binIntersection;
-            // Print the intersection for each bin for debugging
-            //System.out.println("Bin " + i + ": " + binIntersection);
         }
-        // Print the total intersection for debugging
-        //System.out.println("Total Intersection: " + intersection);
         return intersection;
     }
 
